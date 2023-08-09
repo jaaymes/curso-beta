@@ -4,8 +4,8 @@ import { useSettings } from '@/hooks/useSettings'
 import { Theme, useMediaQuery } from '@mui/material'
 
 import VerticalLayout from './VerticalLayout'
-import VerticalNavItems from './components/vertical/navigation/VerticalNavItems'
-
+import VerticalNavItems from './navigation/vertical'
+import VerticalAppBarContent from './vertical/AppBarContent'
 
 interface Props {
   children: ReactNode
@@ -13,8 +13,6 @@ interface Props {
 
 const UserLayout = ({ children }: Props) => {
   const { settings, saveSettings } = useSettings()
-
-
   const hidden = useMediaQuery((theme: Theme) => theme.breakpoints.down('lg'))
 
   return (
@@ -24,7 +22,7 @@ const UserLayout = ({ children }: Props) => {
       saveSettings={saveSettings}
       verticalNavItems={VerticalNavItems()} // Navigation Items
       verticalAppBarContent={(
-        props // AppBar Content
+        props
       ) => (
         <VerticalAppBarContent
           hidden={hidden}

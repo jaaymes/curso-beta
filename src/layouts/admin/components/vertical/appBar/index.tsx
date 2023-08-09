@@ -1,13 +1,9 @@
-// ** React Imports
 import { ReactNode } from 'react'
 
-// ** MUI Imports
-import { styled, useTheme } from '@mui/material/styles'
+import { Settings } from '@/context/settingsContext'
 import MuiAppBar, { AppBarProps } from '@mui/material/AppBar'
 import MuiToolbar, { ToolbarProps } from '@mui/material/Toolbar'
-
-// ** Type Import
-import { Settings } from 'src/@core/context/settingsContext'
+import { styled, useTheme } from '@mui/material/styles'
 
 interface Props {
   hidden: boolean
@@ -42,13 +38,10 @@ const Toolbar = styled(MuiToolbar)<ToolbarProps>(({ theme }) => ({
 }))
 
 const LayoutAppBar = (props: Props) => {
-  // ** Props
   const { settings, verticalAppBarContent: userVerticalAppBarContent } = props
 
-  // ** Hooks
   const theme = useTheme()
 
-  // ** Vars
   const { contentWidth } = settings
 
   return (

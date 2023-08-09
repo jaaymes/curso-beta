@@ -9,7 +9,6 @@ import spacing from './spacing'
 
 const themeOptions = (settings: Settings): ThemeOptions => {
   const { mode, themeColor } = settings
-
   const themeConfig = {
     palette: palette(mode, themeColor),
     typography: {

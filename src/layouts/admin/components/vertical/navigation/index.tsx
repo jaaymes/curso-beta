@@ -1,13 +1,13 @@
 import { ReactNode, useRef, useState } from 'react'
 import PerfectScrollbar from 'react-perfect-scrollbar'
 
-import { VerticalNavItemsType } from '@/configs/types'
 import { Settings } from '@/context/settingsContext'
 import { hexToRGBA } from '@/utils/hex-to-rgba'
 import Box, { BoxProps } from '@mui/material/Box'
 import List from '@mui/material/List'
 import { styled, useTheme } from '@mui/material/styles'
 
+import { VerticalNavItemsType } from '@/layouts/admin/types'
 import Drawer from './Drawer'
 import VerticalNavHeader from './VerticalNavHeader'
 import VerticalNavItems from './VerticalNavItems'

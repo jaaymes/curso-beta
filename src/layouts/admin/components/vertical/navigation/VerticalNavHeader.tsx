@@ -1,19 +1,14 @@
 // ** React Import
 import { ReactNode } from 'react'
 
-// ** Next Import
 import Link from 'next/link'
 
-// ** MUI Imports
+import themeConfig from '@/configs/themeConfig'
+import { Settings } from '@/context/settingsContext'
 import Box, { BoxProps } from '@mui/material/Box'
-import { styled, useTheme } from '@mui/material/styles'
 import Typography, { TypographyProps } from '@mui/material/Typography'
+import { styled, useTheme } from '@mui/material/styles'
 
-// ** Type Import
-import { Settings } from 'src/@core/context/settingsContext'
-
-// ** Configs
-import themeConfig from 'src/configs/themeConfig'
 
 interface Props {
   hidden: boolean
@@ -41,12 +36,6 @@ const HeaderTitle = styled(Typography)<TypographyProps>(({ theme }) => ({
   transition: 'opacity .25s ease-in-out, margin .25s ease-in-out'
 }))
 
-const StyledLink = styled('a')({
-  display: 'flex',
-  alignItems: 'center',
-  textDecoration: 'none'
-})
-
 const VerticalNavHeader = (props: Props) => {
   // ** Props
   const { verticalNavMenuBranding: userVerticalNavMenuBranding } = props
@@ -60,7 +49,7 @@ const VerticalNavHeader = (props: Props) => {
         userVerticalNavMenuBranding(props)
       ) : (
         <Link href='/' passHref>
-          <StyledLink>
+          <>
             <svg
               width={30}
               height={25}
@@ -123,7 +112,7 @@ const VerticalNavHeader = (props: Props) => {
             <HeaderTitle variant='h6' sx={{ ml: 3 }}>
               {themeConfig.templateName}
             </HeaderTitle>
-          </StyledLink>
+          </>
         </Link>
       )}
     </MenuHeaderWrapper>

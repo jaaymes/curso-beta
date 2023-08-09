@@ -6,11 +6,14 @@ import { Router } from 'next/router';
 
 import themeConfig from '@/configs/themeConfig';
 import { SettingsConsumer, SettingsProvider } from '@/context/settingsContext';
+import { AuthProvider } from '@/hooks/useAuth';
 import UserLayout from '@/layouts/admin';
+import '@/styles/globals.css';
 import ThemeComponent from '@/styles/theme/ThemeComponent';
 import { createEmotionCache } from '@/utils/create-emotion-cache';
 import { CacheProvider, EmotionCache } from '@emotion/react';
 import NProgress from 'nprogress';
+import 'react-toastify/dist/ReactToastify.css';
 
 type ExtendedAppProps = AppProps & {
   Component: NextPage
@@ -19,7 +22,6 @@ type ExtendedAppProps = AppProps & {
 
 const clientSideEmotionCache = createEmotionCache()
 
-// ** Pace Loader
 if (themeConfig.routingLoader) {
   Router.events.on('routeChangeStart', () => {
     NProgress.start()
@@ -50,13 +52,16 @@ const MyApp = (props: ExtendedAppProps) => {
         pauseOnHover
         theme="light"
       />
-      <SettingsProvider>
-        <SettingsConsumer>
-          {({ settings }) => {
-            return <ThemeComponent settings={settings}>{getLayout(<Component {...pageProps} />)}</ThemeComponent>
-          }}
-        </SettingsConsumer>
-      </SettingsProvider>
+      <AuthProvider>
+        <SettingsProvider>
+          <SettingsConsumer>
+            {({ settings }) => {
+              return <ThemeComponent settings={settings}>{getLayout(<Component {...pageProps} />)}</ThemeComponent>
+            }}
+          </SettingsConsumer>
+        </SettingsProvider>
+      </AuthProvider>
+
     </CacheProvider>
   )
 };

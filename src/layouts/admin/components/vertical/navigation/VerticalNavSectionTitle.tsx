@@ -1,11 +1,8 @@
-// ** MUI Imports
+import { NavSectionTitle } from '@/configs/types'
 import Divider from '@mui/material/Divider'
-import { styled, useTheme } from '@mui/material/styles'
-import Typography, { TypographyProps } from '@mui/material/Typography'
 import MuiListSubheader, { ListSubheaderProps } from '@mui/material/ListSubheader'
-
-// ** Types
-import { NavSectionTitle } from 'src/@core/layouts/types'
+import Typography, { TypographyProps } from '@mui/material/Typography'
+import { styled, useTheme } from '@mui/material/styles'
 
 interface Props {
   item: NavSectionTitle

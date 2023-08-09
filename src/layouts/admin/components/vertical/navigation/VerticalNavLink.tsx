@@ -1,4 +1,3 @@
-// ** React Imports
 import { ElementType, ReactNode } from 'react'
 
 import Link from 'next/link'
@@ -73,7 +72,7 @@ const VerticalNavLink = ({ item, navVisible, toggleNavVisibility }: Props) => {
       disabled={item.disabled || false}
       sx={{ mt: 1.5, px: '0 !important' }}
     >
-      <Link passHref href={item.path === undefined ? '/' : `${item.path}`}>
+      <Link legacyBehavior passHref href={item.path === undefined ? '/' : `${item.path}`}>
         <MenuNavLink
           component={'a'}
           className={isNavLinkActive() ? 'active' : ''}
