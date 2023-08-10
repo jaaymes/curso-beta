@@ -1,21 +1,13 @@
 import { ElementType, ReactNode } from 'react'
 
-import Link from 'next/link'
-import { useRouter } from 'next/router'
-
 import UserIcon from '@/components/UserIcon'
 import themeConfig from '@/configs/themeConfig'
 import { NavLink } from '@/configs/types'
-import { Settings } from '@/context/settingsContext'
 import { handleURLQueries } from '@/layouts/admin/utils'
-import Box, { BoxProps } from '@mui/material/Box'
-import Chip from '@mui/material/Chip'
-import ListItem from '@mui/material/ListItem'
-import ListItemButton, { ListItemButtonProps } from '@mui/material/ListItemButton'
-import ListItemIcon from '@mui/material/ListItemIcon'
-import Typography from '@mui/material/Typography'
-import { styled } from '@mui/material/styles'
-
+import { Box, BoxProps, Chip, ListItem, ListItemButton, ListItemButtonProps, ListItemIcon, Typography, styled } from '@mui/material'
+import { Settings } from 'http2'
+import Link from 'next/link'
+import { useRouter } from 'next/router'
 
 interface Props {
   item: NavLink
@@ -35,7 +27,7 @@ const MenuNavLink = styled(ListItemButton)<
   transition: 'opacity .25s ease-in-out',
   '&.active, &.active:hover': {
     boxShadow: theme.shadows[3],
-    backgroundImage: `linear-gradient(98deg, ${theme.palette.customColors.primaryGradient}, ${theme.palette.primary.main} 94%)`
+    backgroundImage: `linear-gradient(98deg, ${theme.palette.customColors.primaryGradient}, ${theme.palette.primary.light} 94%)`
   },
   '&.active .MuiTypography-root, &.active .MuiSvgIcon-root': {
     color: `${theme.palette.common.white} !important`
@@ -52,7 +44,6 @@ const MenuItemTextMetaWrapper = styled(Box)<BoxProps>({
 })
 
 const VerticalNavLink = ({ item, navVisible, toggleNavVisibility }: Props) => {
-  // ** Hooks
   const router = useRouter()
 
   const IconTag: ReactNode = item.icon
@@ -76,7 +67,6 @@ const VerticalNavLink = ({ item, navVisible, toggleNavVisibility }: Props) => {
         <MenuNavLink
           component={'a'}
           className={isNavLinkActive() ? 'active' : ''}
-          {...(item.openInNewTab ? { target: '_blank' } : null)}
           onClick={e => {
             if (item.path === undefined) {
               e.preventDefault()
@@ -85,10 +75,6 @@ const VerticalNavLink = ({ item, navVisible, toggleNavVisibility }: Props) => {
             if (navVisible) {
               toggleNavVisibility()
             }
-          }}
-          sx={{
-            pl: 5.5,
-            ...(item.disabled ? { pointerEvents: 'none' } : { cursor: 'pointer' })
           }}
         >
           <ListItemIcon

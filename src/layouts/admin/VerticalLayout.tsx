@@ -2,22 +2,21 @@ import { useState } from 'react'
 
 import ScrollToTop from '@/components/scroll-to-top'
 import themeConfig from '@/configs/themeConfig'
-import DatePickerWrapper from '@/lib/react-datepicker'
 import Box, { BoxProps } from '@mui/material/Box'
 import Fab from '@mui/material/Fab'
 import { styled } from '@mui/material/styles'
 import ArrowUp from 'mdi-material-ui/ArrowUp'
 
-import Footer from './components/shared-components/footer'
 import AppBar from './components/vertical/appBar'
 import Navigation from './components/vertical/navigation'
 import { LayoutProps } from './types'
 
 
-const VerticalLayoutWrapper = styled('div')({
+const VerticalLayoutWrapper = styled('div')(({ theme }) => ({
   height: '100%',
-  display: 'flex'
-})
+  display: 'flex',
+  backgroundColor: theme.palette.background.paper
+}))
 
 const MainContentWrapper = styled(Box)<BoxProps>({
   flexGrow: 1,
@@ -66,20 +65,12 @@ const VerticalLayout = (props: LayoutProps) => {
             sx={{
               ...(contentWidth === 'boxed' && {
                 mx: 'auto',
-                '@media (min-width:1440px)': { maxWidth: 1440 },
                 '@media (min-width:1200px)': { maxWidth: '100%' }
               })
             }}
           >
             {children}
           </ContentWrapper>
-
-          <Footer {...props} />
-
-          {/* Portal for React Datepicker */}
-          <DatePickerWrapper sx={{ zIndex: 11 }}>
-            <Box id='react-datepicker-portal'></Box>
-          </DatePickerWrapper>
         </MainContentWrapper>
       </VerticalLayoutWrapper>
 

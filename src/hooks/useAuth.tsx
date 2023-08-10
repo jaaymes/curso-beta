@@ -7,7 +7,7 @@ import {
 } from 'react'
 
 import api from '@/services/api'
-import { createCookie, eraseAllCookies } from '@/utils/cookie'
+import { createCookie, eraseAllCookies, getCookie } from '@/utils/cookie'
 
 interface IUser {
   id: number
@@ -41,8 +41,8 @@ export const AuthProvider: React.FC<IContextProvider> = ({ children }) => {
   const [user, setUser] = useState<IUser>({} as IUser)
 
   useEffect(() => {
-    const token = localStorage.getItem('token')
-    const user = localStorage.getItem('user')
+    const token = getCookie('token')
+    const user = getCookie('user')
 
     if (token && user) {
       api.defaults.headers.Authorization = `Bearer ${token}`

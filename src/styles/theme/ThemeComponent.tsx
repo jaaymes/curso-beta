@@ -6,6 +6,8 @@ import CssBaseline from '@mui/material/CssBaseline'
 import GlobalStyles from '@mui/material/GlobalStyles'
 import { ThemeProvider, createTheme, responsiveFontSizes } from '@mui/material/styles'
 
+import { UtilsProvider } from '@/context/utilsContext'
+import { Toaster } from 'react-hot-toast'
 import themeOptions from './ThemeOptions'
 import GlobalStyling from './globalStyles'
 import overrides from './overrides'
@@ -36,7 +38,34 @@ const ThemeComponent = (props: Props) => {
     <ThemeProvider theme={theme}>
       <CssBaseline />
       <GlobalStyles styles={() => GlobalStyling(theme) as any} />
-      {children}
+      <UtilsProvider>
+        <Toaster
+          position="top-right"
+          reverseOrder={false}
+          gutter={8}
+          toastOptions={{
+            success: {
+              style: {
+                background: theme.palette.success.main,
+                color: theme.palette.success.contrastText
+              }
+            },
+            error: {
+              style: {
+                background: theme.palette.error.main,
+                color: theme.palette.error.contrastText
+              }
+            },
+            custom: {
+              style: {
+                background: theme.palette.primary.main,
+                color: theme.palette.primary.contrastText
+              }
+            },
+          }}
+        />
+        {children}
+      </UtilsProvider>
     </ThemeProvider>
   )
 }

@@ -26,8 +26,10 @@ import {
 } from "@mui/material"
 import { styled } from '@mui/material/styles'
 import { EyeOffOutline, EyeOutline } from "mdi-material-ui"
+import { GetServerSideProps } from "next"
+import { parseCookies } from "nookies"
 import { Controller, useForm } from "react-hook-form"
-import { toast } from "react-toastify"
+import toast from 'react-hot-toast'
 import { z } from "zod"
 
 interface State {
@@ -114,7 +116,7 @@ const Home = () => {
         <CardContent sx={{ padding: theme => `${theme.spacing(12, 9, 7)} !important` }}>
           <Box sx={{ mb: 12, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
             <BlurImage
-              src='/images/Logo_Thumb.jpg'
+              src='/images/Logo_Thumb.png'
               name='Logo'
               height={40}
               width={40}
@@ -223,3 +225,19 @@ const Home = () => {
 Home.getLayout = (page: ReactNode) => <BlankLayout>{page}</BlankLayout>
 
 export default Home
+
+
+export const getServerSideProps: GetServerSideProps = async context => {
+  const { 'token': token } = parseCookies(context)
+  if (token) {
+    return {
+      redirect: {
+        destination: '/dashboard',
+        permanent: false
+      }
+    }
+  }
+  return {
+    props: {}
+  }
+}

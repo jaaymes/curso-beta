@@ -11,7 +11,7 @@ const Button = (theme: Theme) => {
           borderRadius: 5,
           lineHeight: 1.71,
           letterSpacing: '0.3px',
-          padding: `${theme.spacing(1.875, 3)}`
+          padding: `${theme.spacing(1.875, 3)}`,
         },
         contained: {
           boxShadow: theme.shadows[3],

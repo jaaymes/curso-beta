@@ -1,4 +1,3 @@
-import { ToastContainer } from 'react-toastify';
 
 import { NextPage } from 'next';
 import type { AppProps } from 'next/app';
@@ -8,15 +7,22 @@ import themeConfig from '@/configs/themeConfig';
 import { SettingsConsumer, SettingsProvider } from '@/context/settingsContext';
 import { AuthProvider } from '@/hooks/useAuth';
 import UserLayout from '@/layouts/admin';
+import client from '@/lib/client';
 import '@/styles/globals.css';
 import ThemeComponent from '@/styles/theme/ThemeComponent';
 import { createEmotionCache } from '@/utils/create-emotion-cache';
+import { ApolloProvider } from '@apollo/client';
 import { CacheProvider, EmotionCache } from '@emotion/react';
+import Head from 'next/head';
 import NProgress from 'nprogress';
-import 'react-toastify/dist/ReactToastify.css';
+import 'react-perfect-scrollbar/dist/css/styles.css';
+
+type NextPageWithLayout = NextPage & {
+  getLayout?: (page: React.ReactElement) => React.ReactNode;
+};
 
 type ExtendedAppProps = AppProps & {
-  Component: NextPage
+  Component: NextPageWithLayout
   emotionCache: EmotionCache
 }
 
@@ -39,30 +45,28 @@ const MyApp = (props: ExtendedAppProps) => {
 
   const getLayout = Component.getLayout ?? (page => <UserLayout>{page}</UserLayout>)
   return (
-    <CacheProvider value={emotionCache}>
-      <ToastContainer
-        position="top-right"
-        autoClose={5000}
-        hideProgressBar={false}
-        newestOnTop={false}
-        closeOnClick
-        rtl={false}
-        pauseOnFocusLoss
-        draggable
-        pauseOnHover
-        theme="light"
-      />
-      <AuthProvider>
-        <SettingsProvider>
-          <SettingsConsumer>
-            {({ settings }) => {
-              return <ThemeComponent settings={settings}>{getLayout(<Component {...pageProps} />)}</ThemeComponent>
-            }}
-          </SettingsConsumer>
-        </SettingsProvider>
-      </AuthProvider>
+    <ApolloProvider client={client}>
+      <CacheProvider value={emotionCache}>
+        <Head>
+          <title>{`${themeConfig.templateName}`}</title>
+          <meta
+            name='description'
+            content={`${themeConfig.templateName}`}
+          />
+          <meta name='viewport' content='initial-scale=1, width=device-width' />
+        </Head>
 
-    </CacheProvider>
+        <AuthProvider>
+          <SettingsProvider>
+            <SettingsConsumer>
+              {({ settings }) => {
+                return <ThemeComponent settings={settings}> {getLayout(<Component {...pageProps} />)}</ThemeComponent>
+              }}
+            </SettingsConsumer>
+          </SettingsProvider>
+        </AuthProvider>
+      </CacheProvider>
+    </ApolloProvider>
   )
 };
 

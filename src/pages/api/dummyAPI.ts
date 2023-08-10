@@ -9,4 +9,8 @@ export class DummyAPI extends RESTDataSource {
   async getUsers() {
     return await this.get('users').then((res) => res.users)
   }
+
+  async handleSearchUsers({ key, value, limit }: { key: string, value: string, limit: number }) {
+    return await this.get(`users/filter?key=${key}&value=${value}&limit=${limit || 10}`).then((res) => res.users)
+  }
 }

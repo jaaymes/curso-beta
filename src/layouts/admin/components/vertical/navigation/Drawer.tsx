@@ -1,8 +1,9 @@
-import { ReactNode } from 'react'
+import { ReactNode, useEffect, useState } from 'react'
 
 import { Settings } from '@/context/settingsContext'
-import MuiSwipeableDrawer from '@mui/material/SwipeableDrawer'
-import { useTheme } from '@mui/material/styles'
+import MuiSwipeableDrawer, { SwipeableDrawerProps } from '@mui/material/SwipeableDrawer'
+import { styled, useTheme } from '@mui/material/styles'
+
 
 interface Props {
   hidden: boolean
@@ -14,8 +15,27 @@ interface Props {
   saveSettings: (values: Settings) => void
 }
 
+const SwipeableDrawer = styled(MuiSwipeableDrawer)<SwipeableDrawerProps>({
+  overflowX: 'hidden',
+  transition: 'width .25s ease-in-out',
+  '& ul': {
+    listStyle: 'none'
+  },
+  '& .MuiListItem-gutters': {
+    paddingLeft: 4,
+    paddingRight: 4,
+  },
+  '& .MuiDrawer-paper': {
+    left: 'unset',
+    right: 'unset',
+    overflowX: 'hidden',
+    transition: 'width .25s ease-in-out, box-shadow .25s ease-in-out',
+  }
+})
+
 const Drawer = (props: Props) => {
   const { hidden, children, navWidth, navVisible, setNavVisible } = props
+  const [isSSR, setIsSSR] = useState(true)
 
   const theme = useTheme()
 
@@ -34,22 +54,34 @@ const Drawer = (props: Props) => {
     onClose: () => null
   }
 
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      setIsSSR(false)
+    }
+  }, [isSSR])
+
   return (
-    <MuiSwipeableDrawer
-      className='layout-vertical-nav'
-      variant={hidden ? 'temporary' : 'permanent'}
-      {...(hidden ? { ...MobileDrawerProps } : { ...DesktopDrawerProps })}
-      PaperProps={{ sx: { width: navWidth } }}
-      sx={{
-        width: navWidth,
-        '& .MuiDrawer-paper': {
-          borderRight: 0,
-          backgroundColor: theme.palette.background.default
-        }
-      }}
-    >
-      {children}
-    </MuiSwipeableDrawer>
+    <>
+      {
+        !isSSR && (
+          <SwipeableDrawer
+            className='layout-vertical-nav'
+            variant={hidden ? 'temporary' : 'permanent'}
+            {...(hidden ? { ...MobileDrawerProps } : { ...DesktopDrawerProps })}
+            PaperProps={{ sx: { width: navWidth } }}
+            sx={{
+              width: navWidth,
+              '& .MuiDrawer-paper': {
+                borderRight: 0,
+                backgroundColor: theme.palette.background.default
+              }
+            }}
+          >
+            {children}
+          </SwipeableDrawer>
+        )
+      }
+    </>
   )
 }
 

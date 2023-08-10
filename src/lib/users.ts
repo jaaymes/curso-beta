@@ -6,5 +6,4 @@ const getAllUsers = async () => {
   return res.data
 }
 
-
 export { getAllUsers }

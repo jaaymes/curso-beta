@@ -28,7 +28,7 @@ interface Props {
 }
 
 interface HTMLElementCustom extends HTMLElement {
-  _getBoundingClientRect: () => DOMRect
+  getBoundingClientRectCustom: () => DOMRect
 }
 
 const StyledBoxForShadow = styled(Box)<BoxProps>({
@@ -62,10 +62,10 @@ const Navigation = (props: Props) => {
 
   const handleInfiniteScroll = (ref: HTMLElementCustom) => {
     if (ref) {
-      ref._getBoundingClientRect = ref.getBoundingClientRect
+      ref.getBoundingClientRectCustom = ref.getBoundingClientRect
 
       ref.getBoundingClientRect = () => {
-        const original = ref._getBoundingClientRect()
+        const original = ref.getBoundingClientRectCustom()
 
         return { ...original, height: Math.floor(original.height) }
       }

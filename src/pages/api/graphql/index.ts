@@ -21,9 +21,18 @@ const resolvers = {
       _: unknown,
       __: unknown,
       { dataSources }: Context
-    ): Promise<IUser[]> =>
-      dataSources.DummyAPI.getUsers(),
+    ): Promise<IUser[]> => {
+      return dataSources.DummyAPI.getUsers()
+    },
+    searchUsers: async (
+      _: unknown,
+      { key, value, limit }: { key: string, value: string, limit: number },
+      { dataSources }: Context
+    ): Promise<IUser[]> => {
+      return await dataSources.DummyAPI.handleSearchUsers({ key, value, limit })
+    }
   },
+
 }
 
 const typeDefs = gql`
@@ -90,8 +99,13 @@ const typeDefs = gql`
   userAgent: String
 }
 
+input UsersFilter {
+  firstName: String
+}
+
 type Query {
-  users: [User]
+  users(input: UsersFilter): [User]
+  searchUsers(key: String!, value: String!, limit: Int): [User]
 }
 `
 

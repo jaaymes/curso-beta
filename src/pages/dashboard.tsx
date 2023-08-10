@@ -1,11 +1,25 @@
+import { BlurImage } from "@/components/BlurImage"
 import UserLayout from "@/layouts/admin"
+import { Box } from "@mui/material"
 import { ReactNode } from "react"
 
 const Dashboard = () => {
   return (
-    <div>
-      <h1>Dashboard</h1>
-    </div>
+    <Box
+      display='flex'
+      flexDirection='column'
+      justifyContent='center'
+      alignItems='center'
+      height='100%'
+      width='100%'
+    >
+      <BlurImage
+        src="/images/Logo.webp"
+        name="Logo"
+        height={200}
+        width={600}
+      />
+    </Box>
   )
 }
 
