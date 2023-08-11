@@ -6,11 +6,19 @@ export class DummyAPI extends RESTDataSource {
     this.baseURL = process.env.NEXT_PUBLIC_API_URL
   }
 
-  async getUsers() {
-    return await this.get('users').then((res) => res.users)
+  async getUsers({ limit, skip }: { limit: number, skip: number }) {
+    return await this.get(`users?limit=${limit || 10}&skip=${skip || 0}`)
   }
 
-  async handleSearchUsers({ key, value, limit }: { key: string, value: string, limit: number }) {
+  async getUser(id: number) {
+    return await this.get(`users/${id}`)
+  }
+
+  async handleSearchUsersFilter({ key, value, limit }: { key: string, value: string, limit: number }) {
     return await this.get(`users/filter?key=${key}&value=${value}&limit=${limit || 10}`).then((res) => res.users)
+  }
+
+  async handleSearch({ q }: { q: string }) {
+    return await this.get(`users/search?q=${q}`).then((res) => res.users)
   }
 }

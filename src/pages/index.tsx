@@ -1,5 +1,8 @@
-import { ChangeEvent, ReactNode, useCallback, useState } from "react"
+import { ReactNode, useCallback, useState } from "react"
+import { Controller, useForm } from "react-hook-form"
+import toast from 'react-hot-toast'
 
+import { GetServerSideProps } from "next"
 import { useRouter } from "next/router"
 
 import { BlurImage } from "@/components/BlurImage"
@@ -14,22 +17,17 @@ import {
   CardContent,
   CardProps,
   FormControl,
-  FormControlLabelProps,
   IconButton,
   InputAdornment,
   InputLabel,
   Card as MuiCard,
-  FormControlLabel as MuiFormControlLabel,
   OutlinedInput,
   TextField,
   Typography
 } from "@mui/material"
 import { styled } from '@mui/material/styles'
 import { EyeOffOutline, EyeOutline } from "mdi-material-ui"
-import { GetServerSideProps } from "next"
 import { parseCookies } from "nookies"
-import { Controller, useForm } from "react-hook-form"
-import toast from 'react-hot-toast'
 import { z } from "zod"
 
 interface State {
@@ -41,18 +39,6 @@ const Card = styled(MuiCard)<CardProps>(({ theme }) => ({
   [theme.breakpoints.up('sm')]: { width: '28rem' }
 }))
 
-const LinkStyled = styled('a')(({ theme }) => ({
-  fontSize: '0.875rem',
-  textDecoration: 'none',
-  color: theme.palette.primary.main
-}))
-
-const FormControlLabel = styled(MuiFormControlLabel)<FormControlLabelProps>(({ theme }) => ({
-  '& .MuiFormControlLabel-label': {
-    fontSize: '0.875rem',
-    color: theme.palette.text.secondary
-  }
-}))
 
 interface IFormValues {
   username: string
@@ -86,10 +72,6 @@ const Home = () => {
 
   const { handleSubmit } = methods
 
-  const handleChange = (prop: keyof State) => (event: ChangeEvent<HTMLInputElement>) => {
-    setValues({ ...values, [prop]: event.target.value })
-  }
-
   const handleClickShowPassword = () => {
     setValues({ ...values, showPassword: !values.showPassword })
   }
@@ -108,7 +90,7 @@ const Home = () => {
     } catch (error: any) {
       toast.error(error.response.data.message)
     }
-  }, [])
+  }, [router, signIn])
 
   return (
     <Box className='content-center'>
@@ -228,7 +210,7 @@ export default Home
 
 
 export const getServerSideProps: GetServerSideProps = async context => {
-  const { 'token': token } = parseCookies(context)
+  const { token } = parseCookies(context)
   if (token) {
     return {
       redirect: {

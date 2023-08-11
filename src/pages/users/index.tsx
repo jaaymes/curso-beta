@@ -1,13 +1,18 @@
-import Table from "@/components/Table"
-import { useUtils } from "@/hooks/useUtils"
-import { IUser } from "@/interfaces/users"
-import { useEffect, useState } from "react"
+import { useCallback, useEffect, useState } from "react"
+import toast from "react-hot-toast"
 
-import { normalizePhone } from "@/utils/normalize"
-import { useLazyQuery, useQuery } from "@apollo/client"
-import { RemoveRedEye } from "@mui/icons-material"
-import { Avatar, IconButton, Tooltip } from "@mui/material"
 import { useRouter } from "next/router"
+
+import Table from "@/components/Table"
+import { usePagination } from "@/hooks/usePagination"
+import { IUser } from "@/interfaces/users"
+import { handleRemoveUser } from "@/lib/users"
+import { normalizePhone } from "@/utils/normalize"
+import { useLazyQuery } from "@apollo/client"
+import { DeleteOutlineSharp, EditSharp } from "@mui/icons-material"
+import { Avatar, IconButton, Tooltip } from "@mui/material"
+
+
 import { GET_ALL_USERS, SEARCH_USERS } from "../api/graphql/queries"
 
 const headers = [
@@ -47,30 +52,34 @@ const handleTraitResponse = (data: IUser[]) => {
 }
 
 const Users = () => {
-  const { search } = useUtils()
   const router = useRouter()
-  const { data, loading } = useQuery(GET_ALL_USERS, {
-    variables: {
-      limit: 100
-    }
-  })
+  const { setLimit, setSkip, setTotal, limit, skip } = usePagination()
 
+  const [allUsers, { data, loading, refetch }] = useLazyQuery(GET_ALL_USERS);
   const [searchUsers, { data: usersFiltered }] = useLazyQuery(SEARCH_USERS);
 
   const [users, setUsers] = useState<IUser[]>([])
 
   const handleSearch = async (value: string | null) => {
     if (!value) {
-      setUsers(data?.users)
+      setUsers(data?.allUsers.users)
       return
     }
     await searchUsers({
       variables: {
-        key: 'firstName',
-        value: value
+        q: value
       }
     })
   }
+
+  const handleLoadData = useCallback(async () => {
+    await allUsers({
+      variables: {
+        limit,
+        skip
+      }
+    })
+  }, [allUsers, limit, skip])
 
   useEffect(() => {
     if (usersFiltered) {
@@ -79,19 +88,26 @@ const Users = () => {
   }, [usersFiltered])
 
   useEffect(() => {
-    if (data) {
-      setUsers(data?.users)
-    }
-  }, [data])
+    handleLoadData()
+  }, [handleLoadData])
 
+  useEffect(() => {
+    if (data) {
+      setUsers(data?.allUsers.users)
+      setLimit(data?.allUsers.limit)
+      setSkip(data?.allUsers.skip)
+      setTotal(data?.allUsers.total)
+    }
+  }, [data, setLimit, setSkip, setTotal])
 
   return (
     <Table
-      isLoading={loading}
+      add="/users/create"
+      loading={loading}
       traitResponse={handleTraitResponse}
       title="Usuários"
       headers={headers}
-      data={search.length > 0 ? usersFiltered : users}
+      data={users}
       search={handleSearch}
       actions={(data: IUser) => {
         return (
@@ -99,10 +115,21 @@ const Users = () => {
             <Tooltip title="Visualizar" arrow placement="top">
               <IconButton
                 onClick={() => {
-                  router.push(`/users/${data.id}`)
+                  router.push(`/users/create?id=${data.id}`)
                 }}
               >
-                <RemoveRedEye />
+                <EditSharp color="info" />
+              </IconButton>
+            </Tooltip>
+            <Tooltip title="Remover" arrow placement="top">
+              <IconButton
+                onClick={async () => {
+                  handleRemoveUser(data.id)
+                  await refetch()
+                  toast.success('Usuário removido com sucesso!')
+                }}
+              >
+                <DeleteOutlineSharp color="error" />
               </IconButton>
             </Tooltip>
           </>

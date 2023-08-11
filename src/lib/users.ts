@@ -6,4 +6,8 @@ const getAllUsers = async () => {
   return res.data
 }
 
-export { getAllUsers }
+const handleRemoveUser = async (id: number) => {
+  await api.delete(`/users/${id}`)
+}
+
+export { getAllUsers, handleRemoveUser }

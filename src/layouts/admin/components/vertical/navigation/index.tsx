@@ -2,12 +2,12 @@ import { ReactNode, useRef, useState } from 'react'
 import PerfectScrollbar from 'react-perfect-scrollbar'
 
 import { Settings } from '@/context/settingsContext'
+import { VerticalNavItemsType } from '@/layouts/admin/types'
 import { hexToRGBA } from '@/utils/hex-to-rgba'
 import Box, { BoxProps } from '@mui/material/Box'
 import List from '@mui/material/List'
 import { styled, useTheme } from '@mui/material/styles'
 
-import { VerticalNavItemsType } from '@/layouts/admin/types'
 import Drawer from './Drawer'
 import VerticalNavHeader from './VerticalNavHeader'
 import VerticalNavItems from './VerticalNavItems'
@@ -27,9 +27,9 @@ interface Props {
   beforeVerticalNavMenuContent?: (props?: any) => ReactNode
 }
 
-interface HTMLElementCustom extends HTMLElement {
-  getBoundingClientRectCustom: () => DOMRect
-}
+// interface HTMLElementCustom extends HTMLElement {
+//   getBoundingClientRectCustom: () => DOMRect
+// }
 
 const StyledBoxForShadow = styled(Box)<BoxProps>({
   top: 50,
@@ -60,17 +60,17 @@ const Navigation = (props: Props) => {
 
   const theme = useTheme()
 
-  const handleInfiniteScroll = (ref: HTMLElementCustom) => {
-    if (ref) {
-      ref.getBoundingClientRectCustom = ref.getBoundingClientRect
+  // const handleInfiniteScroll = (ref: HTMLElementCustom) => {
+  //   if (ref) {
+  //     ref.getBoundingClientRectCustom = ref.getBoundingClientRect
 
-      ref.getBoundingClientRect = () => {
-        const original = ref.getBoundingClientRectCustom()
+  //     ref.getBoundingClientRect = () => {
+  //       const original = ref.getBoundingClientRectCustom()
 
-        return { ...original, height: Math.floor(original.height) }
-      }
-    }
-  }
+  //       return { ...original, height: Math.floor(original.height) }
+  //     }
+  //   }
+  // }
 
   const scrollMenu = (container: any) => {
     container = hidden ? container.target : container
@@ -99,7 +99,7 @@ const Navigation = (props: Props) => {
       />
       <Box sx={{ height: '100%', position: 'relative', overflow: 'hidden' }}>
         <ScrollWrapper
-          containerRef={(ref: any) => handleInfiniteScroll(ref)}
+          // containerRef={(ref: any) => handleInfiniteScroll(ref)}
           {...(hidden
             ? {
               onScroll: (container: any) => scrollMenu(container),

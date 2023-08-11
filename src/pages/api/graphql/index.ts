@@ -17,28 +17,42 @@ interface Context {
 
 const resolvers = {
   Query: {
-    users: (
+    allUsers: (
       _: unknown,
-      __: unknown,
+      { limit, skip }: { skip: number, limit: number },
       { dataSources }: Context
     ): Promise<IUser[]> => {
-      return dataSources.DummyAPI.getUsers()
+      return dataSources.DummyAPI.getUsers({ limit, skip })
     },
-    searchUsers: async (
+    searchUsersFilter: async (
       _: unknown,
       { key, value, limit }: { key: string, value: string, limit: number },
       { dataSources }: Context
     ): Promise<IUser[]> => {
-      return await dataSources.DummyAPI.handleSearchUsers({ key, value, limit })
-    }
+      return await dataSources.DummyAPI.handleSearchUsersFilter({ key, value, limit })
+    },
+    searchUsers: async (
+      _: unknown,
+      { q }: { q: string },
+      { dataSources }: Context
+    ): Promise<IUser[]> => {
+      return await dataSources.DummyAPI.handleSearch({ q })
+    },
+    user: (
+      _: unknown,
+      { id }: { id: number },
+      { dataSources }: Context
+    ): Promise<IUser> => {
+      return dataSources.DummyAPI.getUser(id)
+    },
   },
 
 }
 
 const typeDefs = gql`
   type Coodinates {
-    lat: Int
-    lng: Int
+    lat: String
+    lng: String
   }
 
  type  Hair {
@@ -84,7 +98,7 @@ const typeDefs = gql`
   image: String
   bloodGroup: String
   height: Int
-  weight: Int
+  weight: String
   eyeColor: String
   hair: Hair
   domain: String
@@ -103,9 +117,18 @@ input UsersFilter {
   firstName: String
 }
 
+type UsersData {
+  users: [User]
+  limit: Int
+  skip: Int
+  total: Int
+}
+
 type Query {
-  users(input: UsersFilter): [User]
-  searchUsers(key: String!, value: String!, limit: Int): [User]
+  allUsers(limit: Int, skip: Int): UsersData
+  searchUsersFilter(key: String!, value: String!, limit: Int): [User]
+  searchUsers(q: String!): [User]
+  user(id: Int!): User
 }
 `
 

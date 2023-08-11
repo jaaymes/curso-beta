@@ -1,11 +1,13 @@
 
 import { NextPage } from 'next';
 import type { AppProps } from 'next/app';
+import Head from 'next/head';
 import { Router } from 'next/router';
 
 import themeConfig from '@/configs/themeConfig';
 import { SettingsConsumer, SettingsProvider } from '@/context/settingsContext';
 import { AuthProvider } from '@/hooks/useAuth';
+import { PaginationProvider } from '@/hooks/usePagination';
 import UserLayout from '@/layouts/admin';
 import client from '@/lib/client';
 import '@/styles/globals.css';
@@ -13,7 +15,6 @@ import ThemeComponent from '@/styles/theme/ThemeComponent';
 import { createEmotionCache } from '@/utils/create-emotion-cache';
 import { ApolloProvider } from '@apollo/client';
 import { CacheProvider, EmotionCache } from '@emotion/react';
-import Head from 'next/head';
 import NProgress from 'nprogress';
 import 'react-perfect-scrollbar/dist/css/styles.css';
 
@@ -57,13 +58,15 @@ const MyApp = (props: ExtendedAppProps) => {
         </Head>
 
         <AuthProvider>
-          <SettingsProvider>
-            <SettingsConsumer>
-              {({ settings }) => {
-                return <ThemeComponent settings={settings}> {getLayout(<Component {...pageProps} />)}</ThemeComponent>
-              }}
-            </SettingsConsumer>
-          </SettingsProvider>
+          <PaginationProvider>
+            <SettingsProvider>
+              <SettingsConsumer>
+                {({ settings }) => {
+                  return <ThemeComponent settings={settings}> {getLayout(<Component {...pageProps} />)}</ThemeComponent>
+                }}
+              </SettingsConsumer>
+            </SettingsProvider>
+          </PaginationProvider>
         </AuthProvider>
       </CacheProvider>
     </ApolloProvider>

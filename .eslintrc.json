@@ -5,8 +5,6 @@
     "node": true
   },
   "extends": [
-    "next/core-web-vitals",
-    "eslint:recommended",
     "@rocketseat/eslint-config/react"
   ],
   "parser": "@typescript-eslint/parser",
@@ -18,8 +16,6 @@
     "sourceType": "module"
   },
   "plugins": [
-    "react",
-    "prettier",
     "eslint-plugin-import-helpers"
   ],
   "rules": {
