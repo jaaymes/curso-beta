@@ -7,7 +7,7 @@ import Table from "@/components/Table"
 import { usePagination } from "@/hooks/usePagination"
 import { IProducts } from "@/interfaces/products"
 import { IUser } from "@/interfaces/users"
-import { handleRemoveUser } from "@/lib/users"
+import { handleRemoveProduct } from "@/lib/product"
 import { fCurrency } from "@/utils/formatNumber"
 import { useLazyQuery } from "@apollo/client"
 import { DeleteOutlineSharp, EditSharp } from "@mui/icons-material"
@@ -124,7 +124,7 @@ const Products = () => {
             <Tooltip title="Remover" arrow placement="top">
               <IconButton
                 onClick={async () => {
-                  handleRemoveUser(data.id)
+                  handleRemoveProduct(data.id)
                   await refetch()
                   toast.success('Usuário removido com sucesso!')
                 }}
