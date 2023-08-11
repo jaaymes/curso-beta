@@ -32,7 +32,7 @@ const DefaultPalette = (mode: PaletteMode, themeColor: ThemeColor) => {
       black: '#000',
       white: '#FFF'
     },
-    mode: mode,
+    mode,
     primary: {
       light: '#D32F2F',
       main: '#B12828',

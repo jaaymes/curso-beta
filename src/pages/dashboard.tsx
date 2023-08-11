@@ -1,7 +1,8 @@
+import { ReactNode } from "react"
+
 import { BlurImage } from "@/components/BlurImage"
 import UserLayout from "@/layouts/admin"
 import { Box } from "@mui/material"
-import { ReactNode } from "react"
 
 const Dashboard = () => {
   return (

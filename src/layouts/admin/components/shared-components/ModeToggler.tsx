@@ -1,7 +1,6 @@
 import { Settings } from '@/context/settingsContext'
 import { PaletteMode } from '@mui/material'
 import IconButton from '@mui/material/IconButton'
-
 import WeatherNight from 'mdi-material-ui/WeatherNight'
 import WeatherSunny from 'mdi-material-ui/WeatherSunny'
 

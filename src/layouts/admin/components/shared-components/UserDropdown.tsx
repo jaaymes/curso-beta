@@ -1,10 +1,11 @@
 import { Fragment, SyntheticEvent, useState } from 'react'
 
+import router from 'next/router'
+
 import { useAuth } from '@/hooks/useAuth'
 import { Avatar, Badge, Menu, MenuItem } from '@mui/material'
 import { styled } from '@mui/material/styles'
 import { LogoutVariant } from 'mdi-material-ui'
-import router from 'next/router'
 
 const BadgeContentSpan = styled('span')(({ theme }) => ({
   width: 8,

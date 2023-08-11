@@ -1,10 +1,10 @@
 import { Settings } from '@/context/settingsContext'
+import { IconButton } from '@mui/material'
 import Box from '@mui/material/Box'
 import { Theme } from '@mui/material/styles'
 import useMediaQuery from '@mui/material/useMediaQuery'
-
-import { IconButton } from '@mui/material'
 import { Menu } from 'mdi-material-ui'
+
 import ModeToggler from '../components/shared-components/ModeToggler'
 import UserDropdown from '../components/shared-components/UserDropdown'
 

@@ -12,7 +12,6 @@ import { useLazyQuery } from "@apollo/client"
 import { DeleteOutlineSharp, EditSharp } from "@mui/icons-material"
 import { Avatar, IconButton, Tooltip } from "@mui/material"
 
-
 import { GET_ALL_USERS, SEARCH_USERS } from "../api/graphql/queries"
 
 const headers = [

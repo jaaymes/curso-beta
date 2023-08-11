@@ -1,5 +1,6 @@
 import { Settings } from '@/context/settingsContext'
 import { NavLink, NavSectionTitle, VerticalNavItemsType } from '@/layouts/admin/types'
+
 import VerticalNavLink from './VerticalNavLink'
 import VerticalNavSectionTitle from './VerticalNavSectionTitle'
 

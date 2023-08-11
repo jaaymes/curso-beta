@@ -170,16 +170,14 @@ const Table = ({ headers, data, traitResponse, title, actions, add, search, load
   const [dense, setDense] = useState(false)
   const [rows, setRows] = useState<any[]>([])
 
-  useEffect(() => {
-    console.log('rows', rows)
-  }, [rows])
-
   const handleChangePage = (_: unknown, newPage: number) => {
+    setSkip(0)
     setSkip(newPage * limit)
     setPage(newPage)
   }
 
   const handleChangeRowsPerPage = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setLimit(10)
     setLimit(parseInt(event.target.value, 10))
     setPage(0)
   }

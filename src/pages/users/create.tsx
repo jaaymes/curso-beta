@@ -6,16 +6,19 @@ import { useRouter } from "next/router"
 
 import { handleEditData } from "@/hooks/useSetValue"
 import { IUser } from "@/interfaces/users"
-import { getCardType, normalizeCEP, normalizeCardExpire, normalizeCardNumber, normalizePhone } from "@/utils/normalize"
+import api from "@/services/api"
+import { calculateAge, getCardType, normalizeCEP, normalizeCardExpire, normalizeCardNumber, normalizePhone } from "@/utils/normalize"
 import { useLazyQuery } from "@apollo/client"
 import { zodResolver } from "@hookform/resolvers/zod"
 import {
   Avatar,
+  Box,
   Button,
   Card,
   CardActions,
   CardContent,
   CardHeader,
+  CircularProgress,
   Divider,
   FormControl,
   Grid,
@@ -39,28 +42,110 @@ const CreateUser = () => {
   const [user, { data, loading, error }] = useLazyQuery(GET_USER)
   const [showPassword, setShowPassword] = useState(false)
 
-
   const handleClickShowPassword = () => {
     setShowPassword(!showPassword)
   }
 
   const Schema = z
     .object({
-      username: z
-        .string({
-          required_error: 'Nome de usuário é obrigatório'
+      firstName: z.string({
+        required_error: 'Primeiro nome é obrigatório'
+      }),
+      lastName: z.string({
+        required_error: 'Último nome é obrigatório'
+      }),
+      maidenName: z.string({
+        required_error: 'Nome de solteiro (a) é obrigatório'
+      }),
+      age: z.number({
+        required_error: 'Idade é obrigatório'
+      }),
+      gender: z.string({
+        required_error: 'Sexo é obrigatório'
+      }),
+      email: z.string({
+        required_error: 'E-mail é obrigatório'
+      }).email({
+        message: 'E-mail inválido'
+      }),
+      phone: z.string({
+        required_error: 'Telefone é obrigatório'
+      }),
+      username: z.string({
+        required_error: 'Usuário é obrigatório'
+      }),
+      password: z.string({
+        required_error: 'Senha é obrigatório'
+      }),
+      birthDate: z.string({
+        required_error: 'Data de nascimento é obrigatório'
+      }),
+      bloodGroup: z.string({
+        required_error: 'Tipo sanguíneo é obrigatório'
+      }),
+      height: z.number({
+        required_error: 'Altura é obrigatório'
+      }),
+      weight: z.string({
+        required_error: 'Peso é obrigatório'
+      }),
+      eyeColor: z.string({
+        required_error: 'Cor dos olhos é obrigatório'
+      }),
+      hair: z.object({
+        color: z.string({
+          required_error: 'Cor do cabelo é obrigatório'
         }),
-      password: z
-        .string({
-          required_error: 'Senha é obrigatória'
-        })
+        type: z.string({
+          required_error: 'Tipo do cabelo é obrigatório'
+        }),
+      }),
+      domain: z.string().optional(),
+      ip: z.string().optional(),
+      macAddress: z.string().optional(),
+      address: z.object({
+        address: z.string({
+          required_error: 'Endereço é obrigatório'
+        }),
+        city: z.string({
+          required_error: 'Cidade é obrigatório'
+        }),
+        state: z.string({
+          required_error: 'Estado é obrigatório'
+        }),
+        postalCode: z.string({
+          required_error: 'CEP é obrigatório'
+        }),
+      }),
+      bank: z.object({
+        cardExpire: z.string().optional(),
+        cardNumber: z.string().optional(),
+        cardType: z.string().optional(),
+        currency: z.string().optional(),
+        iban: z.string().optional(),
+      }),
+      company: z.object({
+        address: z.object({
+          address: z.string().optional(),
+          city: z.string().optional(),
+          state: z.string().optional(),
+          postalCode: z.string().optional(),
+        }),
+        department: z.string().optional(),
+        name: z.string().optional(),
+        title: z.string().optional(),
+      }),
+      ein: z.string().optional(),
+      ssn: z.string().optional(),
+      userAgent: z.string().optional(),
     })
 
   const methods = useForm<IUser>({
     resolver: zodResolver(Schema),
   })
 
-  const { handleSubmit, control, setValue } = methods
+  const { handleSubmit, control, setValue, formState: { isSubmitting, errors: errorForm } } = methods
+
 
   const handleBlurPostalCode = async (e: React.FocusEvent<HTMLInputElement>) => {
     const { value } = e.target
@@ -78,6 +163,25 @@ const CreateUser = () => {
     }
   }
 
+  const handleOnSubmit = async (data: IUser) => {
+    try {
+      if (id) {
+        await api.put(`/users/${id}`, data).then(() => {
+          toast.success('Usuário atualizado com sucesso')
+          back()
+        })
+        return
+      }
+      await api.post('/users/add', data).then(() => {
+        toast.success('Usuário criado com sucesso')
+        back()
+      })
+
+    } catch (error: any) {
+      toast.error(error.response.data.message)
+    }
+  }
+
   useEffect(() => {
     if (id) {
       user({ variables: { id: Number(id) } })
@@ -86,7 +190,6 @@ const CreateUser = () => {
 
   useEffect(() => {
     if (data?.user) {
-      console.log("🚀 ~ file: create.tsx:61 ~ useEffect ~ data?.user", data?.user)
       handleEditData(data.user, setValue)
     }
   }, [data, setValue])
@@ -99,12 +202,23 @@ const CreateUser = () => {
       }, 2000)
     }
   }, [back, error])
+
+  useEffect(() => {
+    const errors = Object.values(errorForm)
+    errors.map((error: any) => toast.error(error.message))
+  }, [errorForm])
+
+  if (loading) {
+    <Box display="flex" width="100%" alignItems="center" justifyContent="center">
+      <CircularProgress color="primary" size={60} />
+    </Box>
+  }
   return (
     <Card>
       <CardHeader title={id ? 'Editar Usuário' : 'Criar Usuário'} titleTypographyProps={{ variant: 'h6' }} />
       <Divider sx={{ margin: 0 }} />
-      <form onSubmit={e => e.preventDefault()}>
-        <CardContent>
+      <CardContent>
+        <form onSubmit={handleSubmit(handleOnSubmit)}>
           <Grid container spacing={5}>
             <Grid item xs={12}>
               <Typography variant='body2' sx={{ fontWeight: 600 }}>
@@ -270,6 +384,31 @@ const CreateUser = () => {
               />
             </Grid>
 
+            <Grid item xs={12} md={4}>
+              <Controller
+                control={control}
+                name="birthDate"
+                render={({ field: { ref, ...field }, fieldState: { error } }) => (
+                  <TextField
+                    {...field}
+                    ref={ref}
+                    fullWidth
+                    type='date'
+                    label='Data de Nascimento'
+                    onBlur={event => {
+                      const { value } = event.target;
+                      field.onChange(value);
+                      const age = calculateAge(value);
+                      setValue('age', age);
+                    }}
+                    error={Boolean(error)}
+                    helperText={error?.message}
+                    value={field.value || ''}
+                  />
+                )}
+              />
+            </Grid>
+
             <Grid item xs={12} md={2}>
               <Controller
                 control={control}
@@ -280,6 +419,9 @@ const CreateUser = () => {
                     ref={ref}
                     fullWidth
                     label='Altura'
+                    onChange={event => {
+                      field.onChange(parseInt(event.target.value));
+                    }}
                     error={Boolean(error)}
                     helperText={error?.message}
                     value={field.value || ''}
@@ -378,15 +520,35 @@ const CreateUser = () => {
                       labelId='form-layouts-separator-select-label'
                     >
                       <MenuItem value="A+">A+</MenuItem>
-                      <MenuItem value="A−">A-</MenuItem>
+                      <MenuItem value="A−">A−</MenuItem>
                       <MenuItem value="B+">B+</MenuItem>
-                      <MenuItem value="B-">B-</MenuItem>
+                      <MenuItem value="B−">B−</MenuItem>
                       <MenuItem value="AB+">AB+</MenuItem>
-                      <MenuItem value="AB-">AB-</MenuItem>
+                      <MenuItem value="AB−">AB−</MenuItem>
                       <MenuItem value="O+">O+</MenuItem>
-                      <MenuItem value="O-">O-</MenuItem>
+                      <MenuItem value="O−">O−</MenuItem>
                     </Select>
                   </FormControl>
+                )}
+              />
+            </Grid>
+
+            <Grid item xs={12} md={2}>
+              <Controller
+                control={control}
+                name="age"
+                render={({ field: { ref, ...field }, fieldState: { error } }) => (
+                  <TextField
+                    {...field}
+                    ref={ref}
+                    fullWidth
+                    label='Idade'
+                    type="number"
+                    disabled
+                    error={Boolean(error)}
+                    helperText={error?.message}
+                    value={field.value || ''}
+                  />
                 )}
               />
             </Grid>
@@ -604,6 +766,12 @@ const CreateUser = () => {
                       <MenuItem value="Real">Real</MenuItem>
                       <MenuItem value="Dolar">Dolar</MenuItem>
                       <MenuItem value="Euro">Euro</MenuItem>
+                      <MenuItem value="Ruble">Ringgit</MenuItem>
+                      <MenuItem value="Ruble">Ruble</MenuItem>
+                      <MenuItem value="Ruble">Yuan Renminbi</MenuItem>
+                      <MenuItem value="Ruble">Rupiah</MenuItem>
+                      <MenuItem value="Ruble">Ruble</MenuItem>
+
                     </Select>
                   </FormControl>
                 )}
@@ -819,7 +987,7 @@ const CreateUser = () => {
               />
             </Grid>
 
-            <Grid item xs={12} md={4}>
+            <Grid item xs={12} md={2}>
               <Controller
                 control={control}
                 name="ein"
@@ -830,6 +998,26 @@ const CreateUser = () => {
                     multiline
                     fullWidth
                     label='EIN'
+                    type="string"
+                    error={Boolean(error)}
+                    helperText={error?.message}
+                    value={field.value || ''}
+                  />
+                )}
+              />
+            </Grid>
+
+            <Grid item xs={12} md={2}>
+              <Controller
+                control={control}
+                name="ssn"
+                render={({ field: { ref, ...field }, fieldState: { error } }) => (
+                  <TextField
+                    {...field}
+                    ref={ref}
+                    multiline
+                    fullWidth
+                    label='SSN'
                     type="string"
                     error={Boolean(error)}
                     helperText={error?.message}
@@ -874,18 +1062,38 @@ const CreateUser = () => {
                 )}
               />
             </Grid>
+            {/* university */}
+
+            <Grid item xs={12} md={4}>
+              <Controller
+                control={control}
+                name="university"
+                render={({ field: { ref, ...field }, fieldState: { error } }) => (
+                  <TextField
+                    {...field}
+                    ref={ref}
+                    fullWidth
+                    label='Universidade'
+                    error={Boolean(error)}
+                    helperText={error?.message}
+                    value={field.value || ''}
+                  />
+                )}
+              />
+            </Grid>
+
           </Grid>
-        </CardContent>
-        <Divider sx={{ margin: 0 }} />
-        <CardActions>
-          <Button size='large' type='submit' sx={{ mr: 2 }} variant='contained'>
-            {id ? 'Atualizar' : 'Criar'}
-          </Button>
-          <Button size='large' color='secondary' variant='outlined' onClick={back}>
-            Voltar
-          </Button>
-        </CardActions>
-      </form>
+          <Divider sx={{ margin: 0 }} />
+          <CardActions>
+            <Button size='large' type='submit' sx={{ mr: 2 }} variant='contained' disabled={isSubmitting}>
+              {id ? 'Atualizar' : 'Criar'}
+            </Button>
+            <Button size='large' color='secondary' variant='outlined' onClick={back}>
+              Voltar
+            </Button>
+          </CardActions>
+        </form>
+      </CardContent>
     </Card>
   )
 }

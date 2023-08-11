@@ -1,9 +1,10 @@
 import { Fragment, ReactNode, useState } from 'react'
 
+import Image from 'next/image'
+
 import { Box } from '@mui/material'
 import { styled, useTheme } from '@mui/material/styles'
 import useMediaQuery from '@mui/material/useMediaQuery'
-import Image from 'next/image'
 
 interface FooterIllustrationsProp {
   image1?: ReactNode

@@ -1,5 +1,6 @@
 import { NextApiRequest, NextApiResponse } from 'next';
 
+import { IProducts } from '@/interfaces/products';
 import { IUser } from '@/interfaces/users';
 import { ApolloServer } from '@apollo/server';
 import { startServerAndCreateNextHandler } from '@as-integrations/next';
@@ -44,6 +45,34 @@ const resolvers = {
       { dataSources }: Context
     ): Promise<IUser> => {
       return dataSources.DummyAPI.getUser(id)
+    },
+    allProducts: (
+      _: unknown,
+      { limit, skip }: { skip: number, limit: number },
+      { dataSources }: Context
+    ): Promise<IProducts[]> => {
+      return dataSources.DummyAPI.getProducts({ limit, skip })
+    },
+    searchProductsFilter: async (
+      _: unknown,
+      { key, value, limit }: { key: string, value: string, limit: number },
+      { dataSources }: Context
+    ): Promise<IProducts[]> => {
+      return await dataSources.DummyAPI.handleSearchProductsFilter({ key, value, limit })
+    },
+    searchProducts: async (
+      _: unknown,
+      { q }: { q: string },
+      { dataSources }: Context
+    ): Promise<IProducts[]> => {
+      return await dataSources.DummyAPI.handleSearchProducts({ q })
+    },
+    product: (
+      _: unknown,
+      { id }: { id: number },
+      { dataSources }: Context
+    ): Promise<IProducts> => {
+      return dataSources.DummyAPI.getProduct(id)
     },
   },
 
@@ -117,8 +146,29 @@ input UsersFilter {
   firstName: String
 }
 
+type Product {
+  id: Int
+  title: String
+  description: String
+  price: Float
+  discountPercentage: Float
+  rating: Float
+  stock: Int
+  brand: String
+  category: String
+  thumbnail: String
+  images: [String]
+}
+
 type UsersData {
   users: [User]
+  limit: Int
+  skip: Int
+  total: Int
+}
+
+type ProductsData {
+  products: [Product]
   limit: Int
   skip: Int
   total: Int
@@ -129,6 +179,10 @@ type Query {
   searchUsersFilter(key: String!, value: String!, limit: Int): [User]
   searchUsers(q: String!): [User]
   user(id: Int!): User
+  allProducts(limit: Int, skip: Int): ProductsData
+  searchProductsFilter(key: String!, value: String!, limit: Int): [Product]
+  searchProducts(q: String!): [Product]
+  product(id: Int!): Product
 }
 `
 

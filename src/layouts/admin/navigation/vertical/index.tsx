@@ -1,6 +1,7 @@
 import { CartVariant } from 'mdi-material-ui'
 import AccountPlusOutline from 'mdi-material-ui/AccountPlusOutline'
 import HomeOutline from 'mdi-material-ui/HomeOutline'
+
 import { VerticalNavItemsType } from '../../types'
 
 const navigation = (): VerticalNavItemsType => {

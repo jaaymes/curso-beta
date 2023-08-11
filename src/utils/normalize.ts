@@ -168,3 +168,53 @@ export const normalizeCEP = (value: string): string => {
 
   return `${onlyNums.slice(0, 5)}-${onlyNums.slice(5, 8)}`;
 };
+
+
+export const calculateAge = (birthday: string): number => {
+  const birthdayDate = new Date(birthday);
+  const ageDifMs = Date.now() - birthdayDate.getTime();
+  const ageDate = new Date(ageDifMs);
+  return Math.abs(ageDate.getUTCFullYear() - 1970);
+};
+
+export const normalizePrice = (value: string): string => {
+  if (!value) {
+    return value;
+  }
+
+  const onlyNums = value.replace(/[^\d]/g, "");
+
+  if (onlyNums.length === 0) {
+    return "";
+  }
+
+  if (onlyNums.length <= 2) {
+    return `${onlyNums.slice(0, 2)}`;
+  }
+
+  if (onlyNums.length > 2 && onlyNums.length < 6) {
+    return `${onlyNums.slice(0, 2)},${onlyNums.slice(2, 5)}`;
+  }
+
+  if (onlyNums.length > 5 && onlyNums.length < 9) {
+    return `${onlyNums.slice(0, 2)},${onlyNums.slice(
+      2,
+      5,
+    )},${onlyNums.slice(5, 8)}`;
+  }
+
+  if (onlyNums.length > 8 && onlyNums.length < 12) {
+    return `${onlyNums.slice(0, 2)},${onlyNums.slice(
+      2,
+      5,
+    )},${onlyNums.slice(5, 8)},${onlyNums.slice(8, 11)}`;
+  }
+
+  return `${onlyNums.slice(0, 2)},${onlyNums.slice(
+    2,
+    5,
+  )},${onlyNums.slice(5, 8)},${onlyNums.slice(8, 11)},${onlyNums.slice(
+    11,
+    14,
+  )}`;
+};

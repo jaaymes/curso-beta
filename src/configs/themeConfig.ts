@@ -1,5 +1,6 @@
 // ** MUI Imports
 import { PaletteMode } from '@mui/material'
+
 import { ContentWidth } from './types'
 
 type ThemeConfig = {

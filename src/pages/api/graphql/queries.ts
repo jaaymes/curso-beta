@@ -96,3 +96,47 @@ query User($id: Int!) {
     weight
   }
 }`
+
+export const GET_ALL_PRODUCTS = gql`
+query AllProducts($limit: Int, $skip: Int) {
+  allProducts(limit: $limit, skip: $skip) {
+    products {
+      id
+      title
+      thumbnail
+      price
+      category
+    }
+    limit
+    skip
+    total
+  }
+}`
+
+export const SEARCH_PRODUCTS = gql`
+query SearchProducts($q: String!) {
+  searchProducts(q: $q) {
+    id
+    title
+    thumbnail
+    price
+    category
+  }
+}`
+
+export const GET_PRODUCT = gql`
+query Product($id: Int!) {
+  product(id: $id) {
+    id
+    title
+    thumbnail
+    discountPercentage
+    rating
+    stock
+    brand
+    price
+    category
+    description
+    images
+  }
+}` 

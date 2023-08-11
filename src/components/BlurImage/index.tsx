@@ -1,6 +1,8 @@
-import { Box } from "@mui/material"
-import Image from "next/legacy/image"
 import { useState } from "react"
+
+import Image from "next/legacy/image"
+
+import { Box } from "@mui/material"
 
 type ImageProps = {
   height: number

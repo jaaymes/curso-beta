@@ -20,10 +20,6 @@ interface IUser {
   token: string
 }
 
-interface AuthState {
-  token: string
-}
-
 interface SignInCredentials {
   username: string
   password: string

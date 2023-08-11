@@ -1,7 +1,7 @@
+import { Settings } from '@/context/settingsContext'
 import { ThemeOptions } from '@mui/material'
 import { deepmerge } from '@mui/utils'
 
-import { Settings } from '@/context/settingsContext'
 import breakpoints from './breakpoints'
 import palette from './palette'
 import shadows from './shadows'

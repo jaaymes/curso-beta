@@ -3,7 +3,7 @@ import { ReactNode } from 'react'
 import { Settings } from '@/context/settingsContext'
 import MuiAppBar, { AppBarProps } from '@mui/material/AppBar'
 import MuiToolbar, { ToolbarProps } from '@mui/material/Toolbar'
-import { styled, useTheme } from '@mui/material/styles'
+import { styled } from '@mui/material/styles'
 
 interface Props {
   hidden: boolean
@@ -34,11 +34,7 @@ const Toolbar = styled(MuiToolbar)<ToolbarProps>(({ theme }) => ({
 }))
 
 const LayoutAppBar = (props: Props) => {
-  const { settings, verticalAppBarContent: userVerticalAppBarContent } = props
-
-  const theme = useTheme()
-
-  const { contentWidth } = settings
+  const { verticalAppBarContent: userVerticalAppBarContent } = props
 
   return (
     <AppBar elevation={0} color='default' className='layout-navbar' position='static'>
